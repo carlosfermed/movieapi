@@ -5,9 +5,41 @@ function gestionarGET(req, res) {
     res.sendFile(path.resolve("index.html"));
 }
 
-    // -------> intentar enviar un html con cada una de la películas en una lista li
+// esta función correspondería a la Vista (VIEW)
 function mostrarPeliculas(req, res) {
-    res.json(data);
+
+    let texto = "";
+    data.forEach(pelicula => texto += `<li>ID: ${pelicula.id} / ${pelicula.titulo} / ${pelicula.director} / ${pelicula.anio}</li>`);
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+            <style>
+                a {
+                    background-color: grey;
+                    color: white;
+                    margin-left: 45vw;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    padding: 10px;
+                }
+                li {
+                    color: brown;
+                    list-style-type: none;
+                }
+            </style>
+        </head>
+        <body>
+            <ul>
+            ${texto}
+            </ul>
+            <a href="http://localhost:3000">Volver</a>
+        </body>
+        </html>
+    `);
 }
 
 function gestionarPOST(req, res) {
@@ -19,7 +51,6 @@ function gestionarPOST(req, res) {
         anio: req.query.anio
     }
 
-    console.log("Objeto Película: ", nuevaPelicula);
     data.push(nuevaPelicula);
     res.status(201).send("Película añadida satisfactoriamente");
 
