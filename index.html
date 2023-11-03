@@ -62,7 +62,7 @@
         </form>
 
         <div id="div-eliminar">            
-            <button id="botonEliminar">Eliminar Película</button>
+            <button id="botonEliminar" title="Introduce el título de la película y pulsa el botón">Eliminar Película</button>
         </div>   
         <br>
         <a href="http://localhost:3000/movies" class="listado">Ver listado de películas</a>
@@ -84,8 +84,8 @@
                 method: 'POST'
             })
                 .then(async (response) => {
-                    let data = await response.text();   // al ser una promesa hay que esperar a que se resuelva por eso usamos async/await
-                    console.log(data);
+                    let data = await response.text();   // al ser una promesa hay que esperar a que se resuelva por eso usamos async/await,
+                    console.log(data);                  // además recogemos la respuesta como text() ya que lo que devuelve es un string y no un json.
                 })
                 // .then(data => {
                 //     console.log('Datos de película enviados:', data);

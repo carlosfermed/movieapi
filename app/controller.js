@@ -60,8 +60,12 @@ function gestionarDELETE(req, res) {
     const {titulo} = req.params;
 
     const indicePeliculaEncontrada = data.findIndex(pelicula => pelicula.titulo === titulo);
-    data.splice(indicePeliculaEncontrada, 1);
-    res.status(200).send(`La película ${titulo} ha sido eliminada`)
+    if (indicePeliculaEncontrada != -1) {
+        data.splice(indicePeliculaEncontrada, 1);
+        res.status(200).send(`La película ${titulo} ha sido eliminada`)
+    }
+    else    
+        res.status(404).send("No se encontró la película");
 }
 
 

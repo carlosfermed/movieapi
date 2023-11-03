@@ -7,4 +7,4 @@ router.get("/movies", mostrarPeliculas);
 router.post("/movies", gestionarPOST);  // gestionado con parámetros query
 router.delete("/movies/:titulo", gestionarDELETE)   // gestionado con parámetros de ruta
 
-module.exports = router
+module.exports = router // para poder importarlo en el index.js
