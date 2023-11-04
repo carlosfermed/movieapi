@@ -1,6 +1,9 @@
 const path = require("path");
 const {data} = require("./movies");
 
+let contadorID = 4;
+
+
 function gestionarGET(req, res) {
     res.sendFile(path.resolve("index.html"));
 }
@@ -45,14 +48,14 @@ function mostrarPeliculas(req, res) {
 function gestionarPOST(req, res) {
 
     const nuevaPelicula = {
-        id: req.query.id,
+        id: contadorID++,
         titulo: req.query.titulo,
         director: req.query.director,
         anio: req.query.anio
     }
 
     data.push(nuevaPelicula);
-    res.status(201).send("Película añadida satisfactoriamente");
+    res.status(201).json(nuevaPelicula);
 
 }
 

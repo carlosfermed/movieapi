@@ -69,7 +69,7 @@
         
     </body>
     <script>
-        let contadorID = 4;
+        // let contadorID = 4;
 
         document.getElementById('movieForm').addEventListener('submit', function (e) {
             e.preventDefault();
@@ -80,13 +80,13 @@
             const anio = document.getElementById('anio').value;
 
             // Enviar los datos a la API 
-            fetch(`http://localhost:3000/movies?id=${contadorID}&titulo=${titulo}&director=${director}&anio=${anio}`, {
+            fetch(`http://localhost:3000/movies?titulo=${titulo}&director=${director}&anio=${anio}`, {
                 method: 'POST'
             })
                 .then(async (response) => {
-                    let data = await response.text();   // al ser una promesa hay que esperar a que se resuelva por eso usamos async/await,
-                    console.log(data);                  // además recogemos la respuesta como text() ya que lo que devuelve es un string y no un json.
-                })
+                    let data = await response.json();   // al ser una promesa hay que esperar a que se resuelva por eso usamos async/await,
+                    console.log(data);                  // en origen usabamos text() porque se recibia un string, pero lo hemos cambiado 
+                })                                      // para que muestre un json con el id generado en el servidor.
                 // .then(data => {
                 //     console.log('Datos de película enviados:', data);
                 // })
