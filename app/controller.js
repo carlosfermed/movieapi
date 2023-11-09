@@ -3,30 +3,34 @@ const {pool} = require("./db")
 
 // esta función correspondería a la Vista (VIEW)
 async function mostrarPeliculas(req, res) {
-    let texto = "";
 
     const datosRecibidos = await pool.query("SELECT * FROM movies");
     console.log("Datos recibidos: ", datosRecibidos[0])
     const arrayObjetosRecibidos = datosRecibidos[0];
-    for (const item of arrayObjetosRecibidos) {
-        // console.log("item ", item);
-        texto += item.titulo + " / ";
-    }
-    res.json(arrayObjetosRecibidos)
-    
+    res.json(arrayObjetosRecibidos);    
 }
 
-function gestionarPOST(req, res) {
+async function mostrarPelicula(req, res) {
+    let texto = "";
 
-    const nuevaPelicula = {
-        id: contadorID++,
-        titulo: req.query.titulo,
-        director: req.query.director,
-        anio: req.query.anio
-    }
+    const {id} = req.params;
+    console.log('id :>> ', id);
+    const [result] = await pool.query("SELECT * FROM movies WHERE id = (?)", [id]);  
+    // console.log('datoRecibido :>> ', datoRecibido);  
+    const pelicula = result[0];
+    res.json(pelicula);    
+}
 
-    data.push(nuevaPelicula);
-    res.status(201).json(nuevaPelicula);
+async function gestionarPOST(req, res) {
+    
+    const titulo = req.query.titulo;
+    const director = req.query.director;
+    const anio = req.query.anio;    
+
+    await pool.query("INSERT INTO movies VALUES (?, ?, ?)", [titulo, director, anio]);
+    const peliculaAniadida = await pool.query("SELECT * FROM movies WHERE titulo = (?)", [titulo]);
+    console.log('peliculaAniadida :>> ', peliculaAniadida);
+    res.status(201).json(peliculaAniadida);
 
 }
 
@@ -45,6 +49,7 @@ function gestionarDELETE(req, res) {
 
 module.exports = {
     mostrarPeliculas,
+    mostrarPelicula,
     gestionarPOST,
     gestionarDELETE
 }
