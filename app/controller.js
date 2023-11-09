@@ -11,11 +11,10 @@ async function mostrarPeliculas(req, res) {
 }
 
 async function mostrarPelicula(req, res) {
-    let texto = "";
 
     const {id} = req.params;
     console.log('id :>> ', id);
-    const [result] = await pool.query("SELECT * FROM movies WHERE id = (?)", [id]);  
+    const [result] = await pool.query("SELECT * FROM movies WHERE id = ?", [id]);  // el paréntesis solo cuando sea extrictamente necesario para las ?
     // console.log('datoRecibido :>> ', datoRecibido);  
     const pelicula = result[0];
     res.json(pelicula);    
@@ -23,26 +22,36 @@ async function mostrarPelicula(req, res) {
 
 async function gestionarPOST(req, res) {
     
-    const titulo = req.query.titulo;
-    const director = req.query.director;
-    const anio = req.query.anio;    
+    const titulo = req.body.titulo;
+    const director = req.body.director;
+    const anio = req.body.anio;    
 
-    await pool.query("INSERT INTO movies VALUES (?, ?, ?)", [titulo, director, anio]);
-    const peliculaAniadida = await pool.query("SELECT * FROM movies WHERE titulo = (?)", [titulo]);
-    console.log('peliculaAniadida :>> ', peliculaAniadida);
-    res.status(201).json(peliculaAniadida);
-
+    await pool.query("INSERT INTO movies(`id`, `titulo`, `director`, `anio`) VALUES (NULL, ?, ?, ?)", [titulo, director, anio]);
+    const [peliculaAniadida] = await pool.query("SELECT * FROM movies WHERE titulo = (?)", [titulo]);
+    // console.log('peliculaAniadida :>> ', peliculaAniadida);
+    res.status(201).json(peliculaAniadida[0]);
 }
 
-function gestionarDELETE(req, res) {
+async function gestionarPATCH(req, res) {
+    
+    const titulo = req.body.titulo;
+    const director = req.body.director;
+    const anio = req.body.anio;    
+
+    await pool.query("INSERT INTO movies(`id`, `titulo`, `director`, `anio`) VALUES (NULL, ?, ?, ?)", [titulo, director, anio]);
+    const [peliculaAniadida] = await pool.query("SELECT * FROM movies WHERE titulo = (?)", [titulo]);
+    // console.log('peliculaAniadida :>> ', peliculaAniadida);
+    res.status(201).json(peliculaAniadida[0]);
+}
+
+async function gestionarDELETE(req, res) {
     const {titulo} = req.params;
 
-    const indicePeliculaEncontrada = data.findIndex(pelicula => pelicula.titulo === titulo);
-    if (indicePeliculaEncontrada != -1) {
-        data.splice(indicePeliculaEncontrada, 1);
+    const peliculaBorrada = await pool.query("DELETE FROM movies WHERE titulo = ?", [titulo]);
+    // console.log('peliculaBorrada :>> ', peliculaBorrada[0].affectedRows);
+    if (peliculaBorrada[0].affectedRows) 
         res.status(200).send(`La película ${titulo} ha sido eliminada`)
-    }
-    else    
+    else       
         res.status(404).send("No se encontró la película");
 }
 
@@ -51,5 +60,6 @@ module.exports = {
     mostrarPeliculas,
     mostrarPelicula,
     gestionarPOST,
+    gestionarPATCH,
     gestionarDELETE
 }

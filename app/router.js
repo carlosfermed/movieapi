@@ -5,7 +5,7 @@ const {mostrarPeliculas, mostrarPelicula, gestionarPOST, gestionarDELETE} = requ
 // router.get("/", gestionarGET);
 router.get("/movies", mostrarPeliculas);
 router.get("/movies/:id", mostrarPelicula);
-router.post("/movies", gestionarPOST);  // gestionado con parámetros query
-router.delete("/movies/:titulo", gestionarDELETE)   // gestionado con parámetros de ruta
+router.post("/movies", gestionarPOST);  
+router.delete("/movies/:titulo", gestionarDELETE)  
 
 module.exports = router // para poder importarlo en el index.js
