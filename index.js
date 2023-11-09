@@ -1,5 +1,5 @@
-const app = require("express").express();
-
+const express = require("express");
+const app = express();
 const router = require("./app/router");
 const cors = require("cors");
 
@@ -10,10 +10,10 @@ app.use(express.text());                            // para que Express procese 
 app.use(express.json());                            // para que Express procese json si la request llega en formato json.
 // app.use(express.urlencoded({extended: false}));     // form-encode
 
-app.use("/", router);
+app.use("/api", router);
 
 app.use((req, res) => {
     res.status(404).send("Web no encontrada");
 })
 
-app.listen(PORT, () => console.log("Servidor escuchando por puerto " + PORT))
+app.listen(PORT, () => console.log("Servidor escuchando por puerto", PORT))

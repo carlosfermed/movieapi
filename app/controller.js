@@ -1,48 +1,19 @@
 const path = require("path");
-const {data} = require("./movies");
-
-let contadorID = 4;
-
-
-function gestionarGET(req, res) {
-    res.sendFile(path.resolve("index.html"));
-}
+const {pool} = require("./db")
 
 // esta función correspondería a la Vista (VIEW)
-function mostrarPeliculas(req, res) {
-
+async function mostrarPeliculas(req, res) {
     let texto = "";
-    data.forEach(pelicula => texto += `<li>ID: ${pelicula.id} / ${pelicula.titulo} / ${pelicula.director} / ${pelicula.anio}</li>`);
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Document</title>
-            <style>
-                a {
-                    background-color: grey;
-                    color: white;
-                    margin-left: 45vw;
-                    text-decoration: none;
-                    border-radius: 4px;
-                    padding: 10px;
-                }
-                li {
-                    color: brown;
-                    list-style-type: none;
-                }
-            </style>
-        </head>
-        <body>
-            <ul>
-            ${texto}
-            </ul>
-            <a href="http://localhost:3000">Volver</a>
-        </body>
-        </html>
-    `);
+
+    const datosRecibidos = await pool.query("SELECT * FROM movies");
+    console.log("Datos recibidos: ", datosRecibidos[0])
+    const arrayObjetosRecibidos = datosRecibidos[0];
+    for (const item of arrayObjetosRecibidos) {
+        // console.log("item ", item);
+        texto += item.titulo + " / ";
+    }
+    res.json(arrayObjetosRecibidos)
+    
 }
 
 function gestionarPOST(req, res) {
@@ -73,7 +44,6 @@ function gestionarDELETE(req, res) {
 
 
 module.exports = {
-    gestionarGET,
     mostrarPeliculas,
     gestionarPOST,
     gestionarDELETE
