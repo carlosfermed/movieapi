@@ -3,56 +3,78 @@ const {pool} = require("./db")
 
 // esta función correspondería a la Vista (VIEW)
 async function mostrarPeliculas(req, res) {
-
-    const datosRecibidos = await pool.query("SELECT * FROM movies");
-    console.log("Datos recibidos: ", datosRecibidos[0])
-    const arrayObjetosRecibidos = datosRecibidos[0];
-    res.json(arrayObjetosRecibidos);    
+    try {
+        const datosRecibidos = await pool.query("SELECT * FROM movies");
+        // console.log("Datos recibidos: ", datosRecibidos[0])
+        const arrayObjetosRecibidos = datosRecibidos[0];
+        res.json(arrayObjetosRecibidos);  
+    } catch (error) {
+        console.log('ERROR al mostrar Peliculas :>> ', error);
+    }
+      
 }
 
 async function mostrarPelicula(req, res) {
-
     const {id} = req.params;
-    console.log('id :>> ', id);
-    const [result] = await pool.query("SELECT * FROM movies WHERE id = ?", [id]);  // el paréntesis solo cuando sea extrictamente necesario para las ?
-    // console.log('datoRecibido :>> ', datoRecibido);  
-    const pelicula = result[0];
-    res.json(pelicula);    
+
+    try {
+        const [result] = await pool.query("SELECT * FROM movies WHERE id = ?", [id]);  // el paréntesis solo cuando sea extrictamente necesario para las ?
+        // console.log('datoRecibido :>> ', datoRecibido);  
+        const pelicula = result[0];
+        res.json(pelicula); 
+    } catch (error) {
+        console.log('ERROR al mostrar la Pelicula :>> ', error);
+        
+    }
+       
 }
 
-async function gestionarPOST(req, res) {
-    
-    const titulo = req.body.titulo;
-    const director = req.body.director;
-    const anio = req.body.anio;    
-
-    await pool.query("INSERT INTO movies(`id`, `titulo`, `director`, `anio`) VALUES (NULL, ?, ?, ?)", [titulo, director, anio]);
-    const [peliculaAniadida] = await pool.query("SELECT * FROM movies WHERE titulo = (?)", [titulo]);
-    // console.log('peliculaAniadida :>> ', peliculaAniadida);
-    res.status(201).json(peliculaAniadida[0]);
+async function gestionarPOST(req, res) {    
+    const {titulo, director, anio} = req.body;  
+    try {
+        await pool.query("INSERT INTO movies(`id`, `titulo`, `director`, `anio`) VALUES (NULL, ?, ?, ?)", [titulo, director, anio]);
+        const [peliculaAniadida] = await pool.query("SELECT * FROM movies WHERE titulo = (?)", [titulo]);
+        // console.log('peliculaAniadida :>> ', peliculaAniadida);
+        res.status(201).json(peliculaAniadida[0]);
+    } catch (error) {
+        console.log('ERROR al gestionar POST :>> ', error);        
+    }    
 }
+
 
 async function gestionarPATCH(req, res) {
+    const {titulo} = req.params;
+    const {director, anio} = req.body;
     
-    const titulo = req.body.titulo;
-    const director = req.body.director;
-    const anio = req.body.anio;    
+    console.log('titulo :>> ', titulo);
+    console.log('director :>> ', director);
+    console.log('anio :>> ', anio);
 
-    await pool.query("INSERT INTO movies(`id`, `titulo`, `director`, `anio`) VALUES (NULL, ?, ?, ?)", [titulo, director, anio]);
-    const [peliculaAniadida] = await pool.query("SELECT * FROM movies WHERE titulo = (?)", [titulo]);
-    // console.log('peliculaAniadida :>> ', peliculaAniadida);
-    res.status(201).json(peliculaAniadida[0]);
+    try {
+        await pool.query("UPDATE movies SET director = IFNULL(?, director), anio = IFNULL(?, anio) WHERE titulo = ?", [director, anio, titulo]);
+        const [peliculaActualizada] = await pool.query("SELECT * FROM movies WHERE titulo = ?", [titulo]);
+        res.status(200).json(peliculaActualizada[0])
+    } catch (error) {
+        console.log('ERROR al ACTUALIZAR :>> ', error);        
+        
+    }
 }
+
 
 async function gestionarDELETE(req, res) {
     const {titulo} = req.params;
 
-    const peliculaBorrada = await pool.query("DELETE FROM movies WHERE titulo = ?", [titulo]);
-    // console.log('peliculaBorrada :>> ', peliculaBorrada[0].affectedRows);
-    if (peliculaBorrada[0].affectedRows) 
-        res.status(200).send(`La película ${titulo} ha sido eliminada`)
-    else       
-        res.status(404).send("No se encontró la película");
+    try {
+        const peliculaBorrada = await pool.query("DELETE FROM movies WHERE titulo = ?", [titulo]);
+        // console.log('peliculaBorrada :>> ', peliculaBorrada[0].affectedRows);
+        if (peliculaBorrada[0].affectedRows) 
+            res.status(200).send(`La película ${titulo} ha sido eliminada`)
+        else       
+            res.status(404).send("No se encontró la película");
+    } catch (error) {
+        console.log('ERROR al BORRAR :>> ', error);        
+        
+    }
 }
 
 
