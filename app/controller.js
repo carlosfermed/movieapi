@@ -1,6 +1,4 @@
-const path = require("path");
 const {pool} = require("./db")
-
 
 async function mostrarPeliculas(req, res) {
     try {
@@ -10,8 +8,8 @@ async function mostrarPeliculas(req, res) {
         res.json(arrayObjetosRecibidos);  
     } catch (error) {
         console.log('ERROR al mostrar Peliculas :>> ', error);
-    }
-      
+    }     
+
 }
 
 async function mostrarPelicula(req, res) {
@@ -28,8 +26,8 @@ async function mostrarPelicula(req, res) {
         res.json(pelicula); 
     } catch (error) {
         console.log('ERROR al mostrar la Pelicula :>> ', error);
-    }
-       
+    }      
+
 }
 
 async function gestionarPOST(req, res) {    
@@ -42,8 +40,8 @@ async function gestionarPOST(req, res) {
     } catch (error) {
         console.log('ERROR al gestionar POST :>> ', error);        
     }    
-}
 
+}
 
 async function gestionarPATCH(req, res) {
     const {titulo} = req.params;
@@ -58,11 +56,10 @@ async function gestionarPATCH(req, res) {
         const [peliculaActualizada] = await pool.query("SELECT * FROM movies WHERE titulo = ?", [titulo]);
         res.status(200).json(peliculaActualizada[0])
     } catch (error) {
-        console.log('ERROR al ACTUALIZAR :>> ', error);        
-        
+        console.log('ERROR al ACTUALIZAR :>> ', error);         
     }
-}
 
+}
 
 async function gestionarDELETE(req, res) {
     const {titulo} = req.params;
@@ -75,11 +72,10 @@ async function gestionarDELETE(req, res) {
         else       
             res.status(404).send("No se encontró la película");
     } catch (error) {
-        console.log('ERROR al BORRAR :>> ', error);        
-        
+        console.log('ERROR al BORRAR :>> ', error);             
     }
+    
 }
-
 
 module.exports = {
     mostrarPeliculas,
