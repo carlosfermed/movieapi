@@ -9,4 +9,4 @@ router.post("/movies", gestionarPOST);
 router.patch("/movies/:titulo", gestionarPATCH) 
 router.delete("/movies/:titulo", gestionarDELETE)  
 
-module.exports = router // para poder importarlo en el index.js
+module.exports = router // para poder ser importado en el index.js

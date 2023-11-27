@@ -1,7 +1,7 @@
 const path = require("path");
 const {pool} = require("./db")
 
-// esta función correspondería a la Vista (VIEW)
+
 async function mostrarPeliculas(req, res) {
     try {
         const datosRecibidos = await pool.query("SELECT * FROM movies");
@@ -18,13 +18,16 @@ async function mostrarPelicula(req, res) {
     const {id} = req.params;
 
     try {
-        const [result] = await pool.query("SELECT * FROM movies WHERE id = ?", [id]);  // el paréntesis solo cuando sea extrictamente necesario para las ?
+        const [result] = await pool.query("SELECT * FROM movies WHERE id = ?", [id]);  // poner ? entre paréntesis solo cuando sea extrictamente necesario.
         // console.log('datoRecibido :>> ', datoRecibido);  
         const pelicula = result[0];
+        console.log(pelicula);
+        if (pelicula === undefined) {
+            return res.status(404).json({message: "idIncorrecto"});
+        }
         res.json(pelicula); 
     } catch (error) {
         console.log('ERROR al mostrar la Pelicula :>> ', error);
-        
     }
        
 }
