@@ -16,8 +16,7 @@ async function mostrarPelicula(req, res) {
     const {id} = req.params;
 
     try {
-        const [result] = await pool.query("SELECT * FROM movies WHERE id = ?", [id]);  // poner ? entre paréntesis solo cuando sea extrictamente necesario.
-        // console.log('datoRecibido :>> ', datoRecibido);  
+        const [result] = await pool.query("SELECT * FROM movies WHERE id = ?", [id]);
         const pelicula = result[0];
         console.log(pelicula);
         if (pelicula === undefined) {
