@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web FETCH-API</title>
+  <style>
+    body {
+      text-align: center;
+      background-color: antiquewhite;
+    }
+
+    button {
+      margin: 30px;
+      color: blue;
+      border: 2px solid blue;
+      border-radius: 3px;
+      padding: 6px;
+    }
+
+    button:hover {
+      cursor: pointer;
+    }
+
+    #botonEliminar {
+      display: block;
+      margin: auto;
+      color: red;
+    }
+
+    #botonInfoPelicula {
+      border-radius: 20px;
+      padding: 10px;
+      background-color: rgb(85, 85, 218);
+      color: yellow;
+    }
+
+    form {
+      color: brown;
+    }
+
+    fieldset {
+      border-radius: 5px;
+    }
+
+    #div-eliminar {
+      width: 100px;
+      display: block;
+      margin: auto;
+      margin-bottom: 10px;
+    }
+
+    #botonActualizar {
+      width: 280px;
+      display: block;
+      margin: auto;
+      border: 2px solid green;
+      color: rgb(3, 95, 3)
+    }
+
+    #areaInformacion {
+      display: block;
+      margin: auto;
+      width: 250px;
+      height: 250px;
+      border: 1px dashed black;
+      border-radius: 4px;
+      padding: 15px 40px;
+      text-align: left;
+      overflow-y: scroll;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Gestión de Películas</h1>
+  <form id="movieForm">
+    <fieldset>
+      <legend>Información de la Película</legend>
+      <label for="titulo">Título:</label>
+      <input type="text" id="titulo" name="titulo" required><br><br>
+
+      <label for="director">Director:</label>
+      <input type="text" id="director" name="director" required><br><br>
+
+      <label for="duracion">Año:</label>
+      <input type="number" id="anio" name="anio" required><br><br>
+
+    </fieldset>
+    <button type="submit" title="Introduce los datos y guarda la película en el registro">Guardar Película</button>
+  </form>
+
+  <div id="div-eliminar">
+    <button id="botonEliminar" title="Introduce el título de la película y pulsa el botón">Eliminar Película</button>
+  </div>
+  <br>
+  <hr>
+  <div id="div-infoAdicional">
+    <button id="botonActualizar" title="Pulsa para actualizar y ver el listado real almacenado">Ver/Actualizar listado
+      de Películas</button>
+    <span>ID: <input type="text" name="infoPelicula" id="infoPelicula" style="width: 30px"></span>
+    <button id="botonInfoPelicula" title="Muestra información adicional sobre la película usando el ID">Información
+      adicional</button>
+  </div>
+  <div id="areaInformacion"></div>
+</body>
+<script>
+
+  document.getElementById('botonActualizar').addEventListener('click', function (e) {
+    // Seleccionamos elemento del DOM para manipular.
+    const areaInformacion = document.getElementById('areaInformacion');
+    texto = "";
+
+    fetch("http://localhost:3000/api/movies")
+      .then(async (response) => {
+        let data = await response.json();
+        for (const pelicula of data) {
+          texto += pelicula.id + ": " + pelicula.titulo + "<br>";
+        }
+        areaInformacion.innerHTML = texto;
+      })
+      .catch(error => {
+        console.error('ERROR al enviar los datos:', error);
+      });
+  });
+
+  document.getElementById('botonInfoPelicula').addEventListener('click', function (e) {
+    // Seleccionamos elementos del DOM para manipular.
+    const areaInformacion = document.getElementById('areaInformacion');
+    const idnumber = document.getElementById("infoPelicula").value;
+
+    if (!idnumber) {
+      alert("Debe introducir un id")
+    }
+    else {
+      fetch(`http://localhost:3000/api/movies/${idnumber}`)
+        .then(async (response) => {
+          let data = await response.json();
+          if (data.message === "idIncorrecto") {
+            alert("El id introducido no es válido, vuelva a intentarlo.");
+          }
+          areaInformacion.innerHTML = `Título: ${data.titulo} <br> Director: ${data.director} <br> Año: ${data.anio}`;
+        })
+        .catch(error => {
+          console.log('Se ha producido un ERROR:', error);
+        });
+    }
+  });
+
+  document.getElementById('movieForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Obtenemos los valores del formulario.
+    const titulo = document.getElementById('titulo').value;
+    const director = document.getElementById('director').value;
+    const anio = document.getElementById('anio').value;
+
+    // Creamos el objeto película para enviar como cuerpo de la petición.
+    const pelicula = {
+      titulo,
+      director,
+      anio
+    }
+
+    // Enviar los datos a la API 
+    fetch("http://localhost:3000/api/movies", {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(pelicula)
+    })
+    // Tratamiento de repuesta mediante async/await.
+      .then(async (response) => {
+        let data = await response.json();                                   
+        alert("Película " + data.titulo + " añadida a la Base de Datos");
+      })
+      .catch(error => {
+        console.error('Error al enviar los datos:', error);
+      });
+  });
+
+  document.getElementById('botonEliminar').addEventListener('click', () => {
+    // Obtener el título a eliminar del formulario.
+    const tituloEliminar = document.getElementById('titulo').value;
+
+    if (!tituloEliminar) {
+      alert("Debe introducir un título para eliminar.")
+    }
+    else {
+      // Enviar los datos a la API 
+      fetch(`http://localhost:3000/api/movies/${tituloEliminar}`, {
+        method: 'DELETE'
+      })
+        .then(res => res.text())        
+        .then(data => { alert(data) })
+        .catch(error => { console.error(error) });
+    }
+  });        
+</script>
+</html>
