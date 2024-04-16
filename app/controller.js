@@ -7,6 +7,7 @@ async function mostrarPeliculas(req, res) {
         res.json(arrayObjetosRecibidos);  
     } catch (error) {
         console.log('ERROR al mostrar Peliculas :>> ', error);
+        res.status(500).json({message: "Error al mostrar películas"});
     }     
 
 }
@@ -24,6 +25,7 @@ async function mostrarPelicula(req, res) {
         res.json(pelicula); 
     } catch (error) {
         console.log('ERROR al mostrar la Pelicula :>> ', error);
+        res.status(500).json({message: "Error al mostrar la película"});
     }      
 
 }
@@ -35,7 +37,8 @@ async function gestionarPOST(req, res) {
         const [peliculaAniadida] = await pool.query("SELECT * FROM movies WHERE titulo = (?)", [titulo]);
         res.status(201).json(peliculaAniadida[0]);
     } catch (error) {
-        console.log('ERROR al gestionar POST :>> ', error);        
+        console.log('ERROR al gestionar método POST :>> ', error);  
+        res.status(500).json({message: "Error al gestionar método POST"});
     }    
 
 }
@@ -50,7 +53,8 @@ async function gestionarDELETE(req, res) {
         else       
             res.status(404).send("No se encontró la película");
     } catch (error) {
-        console.log('ERROR al BORRAR :>> ', error);             
+        console.log('ERROR al borrar película :>> ', error);
+        res.status(500).json({message: "Error al gestionar método DELETE"});
     }
     
 }
@@ -59,6 +63,5 @@ module.exports = {
     mostrarPeliculas,
     mostrarPelicula,
     gestionarPOST,
-    gestionarPATCH,
     gestionarDELETE
 }
