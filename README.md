@@ -1,5 +1,5 @@
 # movieapi
-Desarrollado utilizando Express.js, este proyecto es una API con una interfaz web diseñada para gestionar una colección de películas. La API permite manipular las diferentes entradas fácilmente mediante la interfaz. El proyecto está diseñado para que los datos se almacenen en una base de datos MySQL.
+Desarrollado utilizando Express.js, este proyecto es una API con una interfaz web diseñada para gestionar una colección de películas. La API permite manipular las diferentes entradas fácilmente mediante la interfaz web diseñada para ello. El proyecto está construido bajo el funcionamiento de una base de datos MySQL.
 
 La API expone diferentes rutas a través de un enrutador definido en Express. Estas rutas incluyen:
 
