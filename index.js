@@ -5,10 +5,9 @@ const cors = require("cors");
 
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());                                    // Permite la entrada desde otro dominio diferente al del propio servidor.
-app.use(express.text());                            // Procesa texto si la petición (request) llega en formato texto.
-app.use(express.json());                            // Procesa json si la petición (request) llega en formato json.
-// app.use(express.urlencoded({extended: false}));     // form-encode
+app.use(cors());         // Permite la entrada desde otro dominio diferente al del propio servidor.
+app.use(express.text());                            
+app.use(express.json());                            
 
 app.use("/api", router);
 
