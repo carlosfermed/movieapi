@@ -5,10 +5,8 @@ const cors = require("cors");
 
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());         // Permite la entrada desde otro dominio diferente al del propio servidor.
-app.use(express.text());                            
-app.use(express.json());                            
-
+app.use(cors());         // Permite la entrada desde otro dominio diferente al del propio servidor.                         
+app.use(express.json());
 app.use("/api", router);
 
 app.use((req, res) => {

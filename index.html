@@ -9,59 +9,50 @@
     body {
       text-align: center;
       background-color: antiquewhite;
+      font-family: sans-serif;
+      font-size: 0.85rem;
     }
-
+    fieldset {
+      width: 300px;
+      margin: auto;
+      color: brown;
+      border-radius: 5px;
+    }
+    fieldset input {
+      float: right;
+    }
     button {
-      margin: 30px;
+      margin: 10px auto;
       color: blue;
       border: 2px solid blue;
       border-radius: 3px;
       padding: 6px;
     }
-
     button:hover {
       cursor: pointer;
     }
-
     #botonEliminar {
-      display: block;
-      margin: auto;
+      padding: 10px;
       color: red;
     }
-
     #botonInfoPelicula {
       border-radius: 20px;
       padding: 10px;
       background-color: rgb(85, 85, 218);
+      border: 1px solid yellow;
       color: yellow;
+      margin-left: 5px;
     }
-
-    form {
-      color: brown;
-    }
-
-    fieldset {
-      border-radius: 5px;
-    }
-
-    #div-eliminar {
-      width: 100px;
-      display: block;
-      margin: auto;
-      margin-bottom: 10px;
-    }
-
-    #botonActualizar {
+    #botonVerPeliculas {
       width: 280px;
       display: block;
-      margin: auto;
+      margin: 15px auto;
       border: 2px solid green;
       color: rgb(3, 95, 3)
     }
-
     #areaInformacion {
-      display: block;
-      margin: auto;
+      /* display: block; */
+      margin: 15px auto;
       width: 250px;
       height: 250px;
       border: 1px dashed black;
@@ -76,7 +67,7 @@
 
 <body>
   <h1>Gestión de Películas</h1>
-  <form id="movieForm">
+  <form id="formularioDeGuardado">
     <fieldset>
       <legend>Información de la Película</legend>
       <label for="titulo">Título:</label>
@@ -91,24 +82,26 @@
     </fieldset>
     <button type="submit" title="Introduce los datos y guarda la película en el registro">Guardar Película</button>
   </form>
-
-  <div id="div-eliminar">
-    <button id="botonEliminar" title="Introduce el título de la película y pulsa el botón">Eliminar Película</button>
+  <div id="div-modificar">
+    <button id="botonActulizarPelicula" title="Introduce el título de la película y pulsa el botón para actualizar el resto de datos">
+      Modificar Película</button>
   </div>
-  <br>
+  <div id="div-eliminar">
+    <button id="botonEliminar" title="Introduce el título de la película y pulsa el botón para eliminar">Eliminar Película</button>
+  </div>
   <hr>
   <div id="div-infoAdicional">
-    <button id="botonActualizar" title="Pulsa para actualizar y ver el listado real almacenado">Ver/Actualizar listado
+    <button id="botonVerPeliculas" title="Pulsa para actualizar y ver el listado real almacenado">Ver listado actualizado
       de Películas</button>
     <span>ID: <input type="text" name="infoPelicula" id="infoPelicula" style="width: 30px"></span>
-    <button id="botonInfoPelicula" title="Muestra información adicional sobre la película usando el ID">Información
+    <button id="botonInfoPelicula" title="Muestra información adicional sobre la película usando el campo ID">Información
       adicional</button>
   </div>
   <div id="areaInformacion"></div>
 </body>
 <script>
-
-  document.getElementById('botonActualizar').addEventListener('click', function (e) {
+  // ___Mostrar colección de películas___
+  document.getElementById('botonVerPeliculas').addEventListener('click', function (e) {
     // Seleccionamos elemento del DOM para manipular.
     const areaInformacion = document.getElementById('areaInformacion');
     texto = "";
@@ -125,7 +118,8 @@
         console.error('ERROR al enviar los datos:', error);
       });
   });
-
+  
+  // ___Visualizar película individual___
   document.getElementById('botonInfoPelicula').addEventListener('click', function (e) {
     // Seleccionamos elementos del DOM para manipular.
     const areaInformacion = document.getElementById('areaInformacion');
@@ -148,8 +142,9 @@
         });
     }
   });
-
-  document.getElementById('movieForm').addEventListener('submit', function (e) {
+  
+  // ___Guardar película___
+  document.getElementById('formularioDeGuardado').addEventListener('submit', function (e) {
     e.preventDefault();
 
     // Obtenemos los valores del formulario.
@@ -179,7 +174,39 @@
         console.error('Error al enviar los datos:', error);
       });
   });
+  
+  // ___Modificar película___
+  document.getElementById('botonActulizarPelicula').addEventListener('click', function (e) {
+    
+    // Obtenemos los valores del formulario.
+    const titulo = document.getElementById('titulo').value;
+    const director = document.getElementById('director').value;
+    const anio = document.getElementById('anio').value;
 
+    // Creamos el objeto película para enviar como cuerpo de la petición.
+    const pelicula = {
+      titulo,
+      director,
+      anio,
+    }
+
+    // Enviar los datos a la API 
+    fetch(`http://localhost:3000/api/movies/${titulo}`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(pelicula)
+    })
+    // Tratamiento de repuesta mediante async/await.
+      .then(async (response) => {
+        let data = await response.json();                                   
+        alert("Película " + data.titulo + " modificada en la Base de Datos");
+      })
+      .catch(error => {
+        console.error('Error al enviar los datos:', error);
+      });
+  });
+  
+  // ___Eliminar película___
   document.getElementById('botonEliminar').addEventListener('click', () => {
     // Obtener el título a eliminar del formulario.
     const tituloEliminar = document.getElementById('titulo').value;

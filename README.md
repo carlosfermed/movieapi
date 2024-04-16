@@ -1,16 +1,15 @@
 # movieapi
-El proyecto es una API con una interfaz web diseñada para gestionar una colección de películas. La API permite manipular las diferentes entradas fácilmente mediante la interfaz. El proyecto está diseñado para que los datos se almacenen en una base de datos MySQL (más información sobre esto a continuación).
-
-Este proyecto utiliza Express.js para el enrutamiento y gestión de solicitudes HTTP. Las solicitudes entrantes son procesadas mediante middleware, incluyendo cors para permitir el acceso desde otros dominios, y express.json para el análisis de solicitudes en formato JSON.
+Desarrollado utilizando Express.js, este proyecto es una API con una interfaz web diseñada para gestionar una colección de películas. La API permite manipular las diferentes entradas fácilmente mediante la interfaz. El proyecto está diseñado para que los datos se almacenen en una base de datos MySQL.
 
 La API expone diferentes rutas a través de un enrutador definido en Express. Estas rutas incluyen:
 
 - `/api/movies`: Para mostrar todas las películas disponibles.
 - `/api/movies/:id`: Para obtener detalles de una película específica por su ID.
-- `/api/movies`: Para crear nuevas películas.
-- `/api/movies/:titulo`: Para eliminar una película por su título.
+- `/api/movies`: Para crear nuevas entradas de películas.
+- `/api/movies/:titulo`: Para modificar los datos sobre una película identificándola mediante su título.
+- `/api/movies/:titulo`: Para eliminar una película identificándola mediante su título.
   
-Para utilizar la API, se recomienda configurar una base de datos MySQL utilizando XAMPP y phpMyAdmin a nivel local. Se proporciona un archivo exportado de la base de datos para facilitar las pruebas.
+Para utilizar la API, se recomienda configurar una base de datos MySQL utilizando XAMPP y phpMyAdmin a nivel local. Se proporciona un archivo exportado de la base de datos para facilitar las pruebas (más detalles a continuación).
 
 ## Instalación
 Para instalar y configurar el proyecto, sigue estos pasos:
@@ -46,7 +45,9 @@ Desde la interfaz, podrás realizar las siguientes operaciones:
 
 -- Crear nuevas entradas de películas.
 
--- Ver información adicional de cada película.
+-- Modificar entradas ya almacenadas.
+
+-- Ver información adicional sobre cada película.
 
 Los cambios realizados se reflejarán en la base de datos configurada previamente.
 
